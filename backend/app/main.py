@@ -2,14 +2,30 @@ from fastapi import FastAPI
 
 from app.api.v1.routes.health import router as health_router
 from app.api.v1.routes.analytics import router as analytics_router
+from app.api.v1.routes.ask import router as ask_router
 
 app = FastAPI(
     title="Enterprise AI Analytics Agent",
     version="1.0.0"
 )
 
-app.include_router(health_router)
-app.include_router(analytics_router)
+app.include_router(
+    health_router,
+    prefix="/api/v1",
+    tags=["Health"]
+)
+
+app.include_router(
+    analytics_router,
+    prefix="/api/v1",
+    tags=["Analytics"]
+)
+
+app.include_router(
+    ask_router,
+    prefix="/api/v1",
+    tags=["SQL Agent"]
+)
 
 @app.get("/")
 def root():
