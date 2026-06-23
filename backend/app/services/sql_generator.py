@@ -1,5 +1,6 @@
 from app.services.ollama_service import OllamaService
 from app.services.schema_service import SchemaService
+from pathlib import Path
 
 
 class SQLGenerator:
@@ -11,10 +12,14 @@ class SQLGenerator:
 
         schema = SchemaService.get_schema_context()
 
-        with open(
-            "app/prompts/sql/sql_generation.txt",
-            "r"
-        ) as f:
+        prompt_path = (
+            Path(__file__).resolve().parent.parent
+            / "prompts"
+            / "sql"
+            / "sql_generation.txt"
+        )
+
+        with open(prompt_path, "r") as f:
             prompt_template = f.read()
 
         prompt = prompt_template.format(
@@ -22,6 +27,12 @@ class SQLGenerator:
             question=question
         )
 
+        print("\n=== SQL AGENT PROMPT ===")
+        print(prompt)
+
         sql = self.ollama.generate(prompt)
+
+        print("\n=== GENERATED SQL ===")
+        print(sql)
 
         return sql.strip()
